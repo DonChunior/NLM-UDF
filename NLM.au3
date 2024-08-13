@@ -4,6 +4,8 @@
 #AutoIt3Wrapper_AU3Check_Stop_OnWarning=Y
 #include-once
 
+#include <StructureConstants.au3>
+
 ; #INDEX# =======================================================================================================================
 ; Title .........: Network List Manager UDF
 ; Description ...: The Network List Manager API enables applications to retrieve a list of available network connections.
@@ -91,7 +93,7 @@ Global Const $NLM_NETWORK_CATEGORY_PUBLIC = 0x00
 Global Const $NLM_NETWORK_CATEGORY_PRIVATE = 0x01
 Global Const $NLM_NETWORK_CATEGORY_DOMAIN_AUTHENTICATED = 0x02
 
-Global Const $__NLMCONSTANT_sIID_IBackgroundCopyError = "{DCB00C01-570F-4A9B-8D69-199FDBA5723B}"
+Global Const $__NLMCONSTANT_sCLSID_NetworkListManager = "{DCB00C01-570F-4A9B-8D69-199FDBA5723B}"
 
 ; ===============================================================================================================================
 
@@ -502,7 +504,7 @@ EndFunc   ;==>__NLM_GetNetworkConnections
 ; Example .......: No
 ; ===============================================================================================================================
 Func __NLM_InitializeObject()
-	$__g_oNLM = ObjCreate($__NLMCONSTANT_sIID_IBackgroundCopyError)
+	$__g_oNLM = ObjCreate($__NLMCONSTANT_sCLSID_NetworkListManager)
 EndFunc   ;==>__NLM_InitializeObject
 
 ; #INTERNAL_USE_ONLY# ===========================================================================================================

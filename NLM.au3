@@ -28,23 +28,35 @@
 ;_NLM_NetworkListManager_IsConnected
 ;_NLM_NetworkListManager_IsConnectedToInternet
 ;_NLM_NetworkListManager_SetSimulatedProfileInfo (TO DO)
+;_NLM_NetworkConnection_GetAdapterId (TO DO)
+;_NLM_NetworkConnection_GetConnectionId (TO DO)
+;_NLM_NetworkConnection_GetConnectivity
+;_NLM_NetworkConnection_GetDomainType
+;_NLM_NetworkConnection_GetNetwork
+;_NLM_NetworkConnection_IsConnected
+;_NLM_NetworkConnection_IsConnectedToInternet
 ;_NLM_Network_GetCategory
-;_NLM_Network_GetConnectivity (TO DO)
+;_NLM_Network_GetConnectivity
 ;_NLM_Network_GetDescription
 ;_NLM_Network_GetDomainType
 ;_NLM_Network_GetName
-;_NLM_Network_GetNetworkConnections (TO DO)
-;_NLM_Network_GetTimeCreatedAndConnected (TO DO)
+;_NLM_Network_GetNetworkConnections
 ;_NLM_Network_GetNetworkId (TO DO)
-;_NLM_Network_IsConnected (TO DO)
-;_NLM_Network_IsConnectedToInternet (TO DO)
+;_NLM_Network_GetTimeCreatedAndConnected (TO DO)
+;_NLM_Network_IsConnected
+;_NLM_Network_IsConnectedToInternet
 ;_NLM_Network_SetCategory (TO DO)
 ;_NLM_Network_SetDescription (TO DO)
 ;_NLM_Network_SetName (TO DO)
 ; ===============================================================================================================================
 
 ; #INTERNAL_USE_ONLY# ===========================================================================================================
+;__NLM_GetConnectivity
+;__NLM_GetDomainType
+;__NLM_GetNetworkConnections
 ;__NLM_InitializeObject
+;__NLM_IsConnected
+;__NLM_IsConnectedToInternet
 ; ===============================================================================================================================
 
 ; #VARIABLES# ===================================================================================================================
@@ -98,8 +110,8 @@ Global Const $__NLMCONSTANT_sIID_IBackgroundCopyError = "{DCB00C01-570F-4A9B-8D6
 ; ===============================================================================================================================
 Func _NLM_NetworkListManager_GetConnectivity()
 	If Not $__g_oNLM Then __NLM_InitializeObject()
-	Local $iConnectivity = $__g_oNLM.GetConnectivity
-	Return SetError(0, 0, $iConnectivity)
+	Local $iConnectivity = __NLM_GetConnectivity($__g_oNLM)
+	Return SetError(@error, @extended, $iConnectivity)
 EndFunc   ;==>_NLM_NetworkListManager_GetConnectivity
 
 ; #FUNCTION# ====================================================================================================================
@@ -117,13 +129,8 @@ EndFunc   ;==>_NLM_NetworkListManager_GetConnectivity
 ; ===============================================================================================================================
 Func _NLM_NetworkListManager_GetNetworkConnections()
 	If Not $__g_oNLM Then __NLM_InitializeObject()
-	Local $oNetworkConnections = $__g_oNLM.GetNetworkConnections
-	Local $aoNetworkConnections[0]
-	For $oNetworkConnection In $oNetworkConnections
-		ReDim $aoNetworkConnections[UBound($aoNetworkConnections) + 1]
-		$aoNetworkConnections[UBound($aoNetworkConnections) - 1] = $oNetworkConnection
-	Next
-	Return SetError(0, 0, $aoNetworkConnections)
+	Local $aoNetworkConnections = __NLM_GetNetworkConnections($__g_oNLM)
+	Return SetError(@error, @extended, $aoNetworkConnections)
 EndFunc   ;==>_NLM_NetworkListManager_GetNetworkConnections
 
 ; #FUNCTION# ====================================================================================================================
@@ -165,8 +172,8 @@ EndFunc   ;==>_NLM_NetworkListManager_GetNetworks
 ; ===============================================================================================================================
 Func _NLM_NetworkListManager_IsConnected()
 	If Not $__g_oNLM Then __NLM_InitializeObject()
-	Local $bIsConnected = $__g_oNLM.IsConnected
-	Return SetError(0, 0, $bIsConnected)
+	Local $bIsConnected = __NLM_IsConnected($__g_oNLM)
+	Return SetError(@error, @extended, $bIsConnected)
 EndFunc   ;==>_NLM_NetworkListManager_IsConnected
 
 ; #FUNCTION# ====================================================================================================================
@@ -184,9 +191,99 @@ EndFunc   ;==>_NLM_NetworkListManager_IsConnected
 ; ===============================================================================================================================
 Func _NLM_NetworkListManager_IsConnectedToInternet()
 	If Not $__g_oNLM Then __NLM_InitializeObject()
-	Local $bIsConnectedToInternet = $__g_oNLM.IsConnectedToInternet
-	Return SetError(0, 0, $bIsConnectedToInternet)
+	Local $bIsConnectedToInternet = __NLM_IsConnectedToInternet($__g_oNLM)
+	Return SetError(@error, @extended, $bIsConnectedToInternet)
 EndFunc   ;==>_NLM_NetworkListManager_IsConnectedToInternet
+
+; #FUNCTION# ====================================================================================================================
+; Name ..........: _NLM_NetworkConnection_GetConnectivity
+; Description ...: Returns the connectivity state of this network connection.
+; Syntax ........: _NLM_NetworkConnection_GetConnectivity(Const Byref $oNetworkConnection)
+; Parameters ....: $oNetworkConnection  - [in/out and const] an object.
+; Return values .: None
+; Author ........: Domenic Laritz
+; Modified ......:
+; Remarks .......:
+; Related .......:
+; Link ..........: https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/nf-netlistmgr-inetworkconnection-getconnectivity
+; Example .......: No
+; ===============================================================================================================================
+Func _NLM_NetworkConnection_GetConnectivity(Const ByRef $oNetworkConnection)
+	Local $iConnectivity = __NLM_GetConnectivity($oNetworkConnection)
+	Return SetError(@error, @extended, $iConnectivity)
+EndFunc   ;==>_NLM_NetworkConnection_GetConnectivity
+
+; #FUNCTION# ====================================================================================================================
+; Name ..........: _NLM_NetworkConnection_GetDomainType
+; Description ...: Returns the domain type of this network connection.
+; Syntax ........: _NLM_NetworkConnection_GetDomainType(Const Byref $oNetworkConnection)
+; Parameters ....: $oNetworkConnection  - [in/out and const] an object.
+; Return values .: None
+; Author ........: Domenic Laritz
+; Modified ......:
+; Remarks .......:
+; Related .......:
+; Link ..........: https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/nf-netlistmgr-inetworkconnection-getdomaintype
+; Example .......: No
+; ===============================================================================================================================
+Func _NLM_NetworkConnection_GetDomainType(Const ByRef $oNetworkConnection)
+	Local $iDomainType = __NLM_GetDomainType($oNetworkConnection)
+	Return SetError(@error, @extended, $iDomainType)
+EndFunc   ;==>_NLM_NetworkConnection_GetDomainType
+
+; #FUNCTION# ====================================================================================================================
+; Name ..........: _NLM_NetworkConnection_GetNetwork
+; Description ...: Returns the associated network of this connection.
+; Syntax ........: _NLM_NetworkConnection_GetNetwork(Const Byref $oNetworkConnection)
+; Parameters ....: $oNetworkConnection  - [in/out and const] an object.
+; Return values .: None
+; Author ........: Domenic Laritz
+; Modified ......:
+; Remarks .......:
+; Related .......:
+; Link ..........: https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/nf-netlistmgr-inetworkconnection-getnetwork
+; Example .......: No
+; ===============================================================================================================================
+Func _NLM_NetworkConnection_GetNetwork(Const ByRef $oNetworkConnection)
+	Local $oNetwork = $oNetworkConnection.GetNetwork
+	Return SetError(0, 0, $oNetwork)
+EndFunc   ;==>_NLM_NetworkConnection_GetNetwork
+
+; #FUNCTION# ====================================================================================================================
+; Name ..........: _NLM_NetworkConnection_IsConnected
+; Description ...: Returns whether this network connection has any network connectivity.
+; Syntax ........: _NLM_NetworkConnection_IsConnected(Const Byref $oNetworkConnection)
+; Parameters ....: $oNetworkConnection  - [in/out and const] an object.
+; Return values .: None
+; Author ........: Domenic Laritz
+; Modified ......:
+; Remarks .......:
+; Related .......:
+; Link ..........: https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/nf-netlistmgr-inetworkconnection-get_isconnected
+; Example .......: No
+; ===============================================================================================================================
+Func _NLM_NetworkConnection_IsConnected(Const ByRef $oNetworkConnection)
+	Local $bIsConnected = __NLM_IsConnected($oNetworkConnection)
+	Return SetError(@error, @extended, $bIsConnected)
+EndFunc   ;==>_NLM_NetworkConnection_IsConnected
+
+; #FUNCTION# ====================================================================================================================
+; Name ..........: _NLM_NetworkConnection_IsConnectedToInternet
+; Description ...: Returns whether this network connection has Internet connectivity.
+; Syntax ........: _NLM_NetworkConnection_IsConnectedToInternet(Const Byref $oNetworkConnection)
+; Parameters ....: $oNetworkConnection  - [in/out and const] an object.
+; Return values .: None
+; Author ........: Domenic Laritz
+; Modified ......:
+; Remarks .......:
+; Related .......:
+; Link ..........: https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/nf-netlistmgr-inetworkconnection-get_isconnectedtointernet
+; Example .......: No
+; ===============================================================================================================================
+Func _NLM_NetworkConnection_IsConnectedToInternet(Const ByRef $oNetworkConnection)
+	Local $bIsConnectedToInternet = __NLM_IsConnectedToInternet($oNetworkConnection)
+	Return SetError(@error, @extended, $bIsConnectedToInternet)
+EndFunc   ;==>_NLM_NetworkConnection_IsConnectedToInternet
 
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: _NLM_Network_GetCategory
@@ -205,6 +302,24 @@ Func _NLM_Network_GetCategory(Const ByRef $oNetwork)
 	Local $iCategory = $oNetwork.GetCategory
 	Return SetError(0, 0, $iCategory)
 EndFunc   ;==>_NLM_Network_GetCategory
+
+; #FUNCTION# ====================================================================================================================
+; Name ..........: _NLM_Network_GetConnectivity
+; Description ...: Returns the connectivity state of this network.
+; Syntax ........: _NLM_Network_GetConnectivity(Const Byref $oNetwork)
+; Parameters ....: $oNetwork            - [in/out and const] an object.
+; Return values .: None
+; Author ........: Domenic Laritz
+; Modified ......:
+; Remarks .......:
+; Related .......:
+; Link ..........: https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/nf-netlistmgr-inetwork-getconnectivity
+; Example .......: No
+; ===============================================================================================================================
+Func _NLM_Network_GetConnectivity(Const ByRef $oNetwork)
+	Local $iConnectivity = __NLM_GetConnectivity($oNetwork)
+	Return SetError(@error, @extended, $iConnectivity)
+EndFunc   ;==>_NLM_Network_GetConnectivity
 
 ; #FUNCTION# ====================================================================================================================
 ; Name ..........: _NLM_Network_GetDescription
@@ -238,8 +353,8 @@ EndFunc   ;==>_NLM_Network_GetDescription
 ; Example .......: No
 ; ===============================================================================================================================
 Func _NLM_Network_GetDomainType(Const ByRef $oNetwork)
-	Local $iDomainType = $oNetwork.GetDomainType
-	Return SetError(0, 0, $iDomainType)
+	Local $iDomainType = __NLM_GetDomainType($oNetwork)
+	Return SetError(@error, @extended, $iDomainType)
 EndFunc   ;==>_NLM_Network_GetDomainType
 
 ; #FUNCTION# ====================================================================================================================
@@ -260,6 +375,119 @@ Func _NLM_Network_GetName(Const ByRef $oNetwork)
 	Return SetError(0, 0, $sName)
 EndFunc   ;==>_NLM_Network_GetName
 
+; #FUNCTION# ====================================================================================================================
+; Name ..........: _NLM_Network_GetNetworkConnections
+; Description ...: Get the list of network connections for this network.
+; Syntax ........: _NLM_Network_GetNetworkConnections(Const Byref $oNetwork)
+; Parameters ....: $oNetwork            - [in/out and const] an object.
+; Return values .: None
+; Author ........: Domenic Laritz
+; Modified ......:
+; Remarks .......:
+; Related .......:
+; Link ..........: https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/nf-netlistmgr-inetwork-getnetworkconnections
+; Example .......: No
+; ===============================================================================================================================
+Func _NLM_Network_GetNetworkConnections(Const ByRef $oNetwork)
+	Local $aoNetworkConnections = __NLM_GetNetworkConnections($oNetwork)
+	Return SetError(@error, @extended, $aoNetworkConnections)
+EndFunc   ;==>_NLM_Network_GetNetworkConnections
+
+; #FUNCTION# ====================================================================================================================
+; Name ..........: _NLM_Network_IsConnected
+; Description ...: Returns whether this network has any network connectivy.
+; Syntax ........: _NLM_Network_IsConnected(Const Byref $oNetwork)
+; Parameters ....: $oNetwork            - [in/out and const] an object.
+; Return values .: None
+; Author ........: Domenic Laritz
+; Modified ......:
+; Remarks .......:
+; Related .......:
+; Link ..........: https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/nf-netlistmgr-inetwork-get_isconnected
+; Example .......: No
+; ===============================================================================================================================
+Func _NLM_Network_IsConnected(Const ByRef $oNetwork)
+	Local $bIsConnected = __NLM_IsConnected($oNetwork)
+	Return SetError(@error, @extended, $bIsConnected)
+EndFunc   ;==>_NLM_Network_IsConnected
+
+; #FUNCTION# ====================================================================================================================
+; Name ..........: _NLM_Network_IsConnectedToInternet
+; Description ...: Returns whether this network has Internet connectivity.
+; Syntax ........: _NLM_Network_IsConnectedToInternet(Const Byref $oNetwork)
+; Parameters ....: $oNetwork            - [in/out and const] an object.
+; Return values .: None
+; Author ........: Domenic Laritz
+; Modified ......:
+; Remarks .......:
+; Related .......:
+; Link ..........: https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/nf-netlistmgr-inetwork-get_isconnectedtointernet
+; Example .......: No
+; ===============================================================================================================================
+Func _NLM_Network_IsConnectedToInternet(Const ByRef $oNetwork)
+	Local $bIsConnectedToInternet = __NLM_IsConnectedToInternet($oNetwork)
+	Return SetError(@error, @extended, $bIsConnectedToInternet)
+EndFunc   ;==>_NLM_Network_IsConnectedToInternet
+
+; #INTERNAL_USE_ONLY# ===========================================================================================================
+; Name ..........: __NLM_GetConnectivity
+; Description ...:
+; Syntax ........: __NLM_GetConnectivity(Const Byref $oObject)
+; Parameters ....: $oObject             - [in/out and const] an object.
+; Return values .: None
+; Author ........: Domenic Laritz
+; Modified ......:
+; Remarks .......:
+; Related .......:
+; Link ..........:
+; Example .......: No
+; ===============================================================================================================================
+Func __NLM_GetConnectivity(Const ByRef $oObject)
+	Local $iConnectivity = $oObject.GetConnectivity
+	Return SetError(0, 0, $iConnectivity)
+EndFunc   ;==>__NLM_GetConnectivity
+
+; #INTERNAL_USE_ONLY# ===========================================================================================================
+; Name ..........: __NLM_GetDomainType
+; Description ...:
+; Syntax ........: __NLM_GetDomainType(Const Byref $oObject)
+; Parameters ....: $oObject             - [in/out and const] an object.
+; Return values .: None
+; Author ........: Domenic Laritz
+; Modified ......:
+; Remarks .......:
+; Related .......:
+; Link ..........:
+; Example .......: No
+; ===============================================================================================================================
+Func __NLM_GetDomainType(Const ByRef $oObject)
+	Local $iDomainType = $oObject.GetDomainType
+	Return SetError(0, 0, $iDomainType)
+EndFunc   ;==>__NLM_GetDomainType
+
+; #INTERNAL_USE_ONLY# ===========================================================================================================
+; Name ..........: __NLM_GetNetworkConnections
+; Description ...:
+; Syntax ........: __NLM_GetNetworkConnections(Const Byref $oObject)
+; Parameters ....: $oObject             - [in/out and const] an object.
+; Return values .: None
+; Author ........: Domenic Laritz
+; Modified ......:
+; Remarks .......:
+; Related .......:
+; Link ..........:
+; Example .......: No
+; ===============================================================================================================================
+Func __NLM_GetNetworkConnections(Const ByRef $oObject)
+	Local $oNetworkConnections = $oObject.GetNetworkConnections
+	Local $aoNetworkConnections[0]
+	For $oNetworkConnection In $oNetworkConnections
+		ReDim $aoNetworkConnections[UBound($aoNetworkConnections) + 1]
+		$aoNetworkConnections[UBound($aoNetworkConnections) - 1] = $oNetworkConnection
+	Next
+	Return SetError(0, 0, $aoNetworkConnections)
+EndFunc   ;==>__NLM_GetNetworkConnections
+
 ; #INTERNAL_USE_ONLY# ===========================================================================================================
 ; Name ..........: __NLM_InitializeObject
 ; Description ...:
@@ -276,3 +504,39 @@ EndFunc   ;==>_NLM_Network_GetName
 Func __NLM_InitializeObject()
 	$__g_oNLM = ObjCreate($__NLMCONSTANT_sIID_IBackgroundCopyError)
 EndFunc   ;==>__NLM_InitializeObject
+
+; #INTERNAL_USE_ONLY# ===========================================================================================================
+; Name ..........: __NLM_IsConnected
+; Description ...:
+; Syntax ........: __NLM_IsConnected(Const Byref $oObject)
+; Parameters ....: $oObject             - [in/out and const] an object.
+; Return values .: None
+; Author ........: Domenic Laritz
+; Modified ......:
+; Remarks .......:
+; Related .......:
+; Link ..........:
+; Example .......: No
+; ===============================================================================================================================
+Func __NLM_IsConnected(Const ByRef $oObject)
+	Local $bIsConnected = $oObject.IsConnected
+	Return SetError(0, 0, $bIsConnected)
+EndFunc   ;==>__NLM_IsConnected
+
+; #INTERNAL_USE_ONLY# ===========================================================================================================
+; Name ..........: __NLM_IsConnectedToInternet
+; Description ...:
+; Syntax ........: __NLM_IsConnectedToInternet(Const Byref $oObject)
+; Parameters ....: $oObject             - [in/out and const] an object.
+; Return values .: None
+; Author ........: Domenic Laritz
+; Modified ......:
+; Remarks .......:
+; Related .......:
+; Link ..........:
+; Example .......: No
+; ===============================================================================================================================
+Func __NLM_IsConnectedToInternet(Const ByRef $oObject)
+	Local $bIsConnectedToInternet = $oObject.IsConnectedToInternet
+	Return SetError(0, 0, $bIsConnectedToInternet)
+EndFunc   ;==>__NLM_IsConnectedToInternet
